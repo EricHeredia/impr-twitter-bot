@@ -46,7 +46,7 @@ function bot() {
         let minutes = new Date(futureTime).getMinutes();
         let fMinutes = minutes > 9 ? minutes:'0' + minutes.toString();
         let amPm = new Date(futureTime).getHours() < 13 ? 'AM':'PM';
-        console.log('Next tweet cycle runs at ' + hours + ':' + minutes + ' ' + amPm);
+        console.log('Next tweet cycle runs at ' + hours + ':' + fMinutes + ' ' + amPm);
         myTimer(randomTime);
         stream.destroy();
       }
@@ -58,5 +58,5 @@ function bot() {
 
 bot();
 function myTimer(randomTime) {
-  setTimeout(bot(), randomTime)
+  setTimeout(bot, randomTime)
 }

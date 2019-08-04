@@ -44,7 +44,8 @@ function bot() {
         let futureTime = new Date().getTime() + randomTime;
         let hours = new Date(futureTime).getHours() % 12;
         let minutes = new Date(futureTime).getMinutes();
-        console.log('Next tweet cycle runs at ' + hours + ':' + minutes);
+        let amPm = new Date(futureTime).getHours() < 13 ? 'AM':'PM';
+        console.log('Next tweet cycle runs at ' + hours + ':' + minutes ' ' + amPm);
         stream.destroy();
       }
     })

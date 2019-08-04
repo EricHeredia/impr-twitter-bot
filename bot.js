@@ -4,25 +4,36 @@ const Twitter = new twit(config);
 
 const retweet = () => {
   const params = {
-    q: '#ReactJS, #javascript, #MongoDB, #NodeJS, #coding',
+    q: '#webdevelopment',
     result_type: 'recent',
     lang: 'en',
-    count: '15'
+    count: '10'
   }
 
-Twitter.get('search/tweets', params, (err, data, res) => {
-  if (err) {
-    console.log(err.message);
-  }
-  console.log(data.statuses[0].id_str);
-  Twitter.post('statuses/retweet/' + data.statuses[0].id_str, (err, data, res) => {
+  Twitter.get('search/tweets', params, (err, data, res) => {
     if (err) {
       console.log(err.message);
     } else {
-      console.log('Retweeted!');
+
+      let ids = []
+      data.statuses.forEach((tweet) => {
+        ids.push(tweet.id_str);
+      })
+
+      console.log(ids);
+
+      for (i = 0; i < ids.length; i++) {
+        Twitter.post('statuses/retweet/' + ids[i], (err, data, res) => {
+          if (err) {
+            console.log(err.message);
+          } else {
+            console.log('Retweeted!');
+            i = ids.length;
+          }
+        })
+      }
     }
   })
-})
 }
 
 retweet();

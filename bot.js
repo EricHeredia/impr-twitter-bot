@@ -1,5 +1,13 @@
 var count = 0;
 
+function getRand(min = 600000, max = 960000) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+var randomTime = getRand();
+
 function bot() {
   require('dotenv').config({path: __dirname + '/.env'})
 
@@ -32,6 +40,7 @@ function bot() {
         let word = count === 1 ? ' tweet!':' tweets!';
         console.log('\033[2J');
         console.log('You have liked/retweeted ' + count + word);
+        randomTime = getRand()
         stream.destroy();
       }
     })
@@ -43,4 +52,4 @@ function bot() {
 bot();
 setInterval(() => {
   bot();
-}, 900000)
+}, randomTime)

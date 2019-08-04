@@ -1,43 +1,57 @@
-const twit = require('twit');
-const config = require('./config')
-const Twitter = new twit(config);
+require('dotenv').config({path: __dirname + '/.env'})
+
+const Twitter = require('twitter')
+const client = new Twitter({
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET
+})
+
+const stream = client.stream('statuses/filter', {
+  track: '#ReactJS, #javascript, #mongodb, #php, #mysql'
+})
+
+// Bot posting too much. 15% unfollow. Retweet and like better content.
+stream.on('data', (event) => {
+  client.post('favorites/create', {id: event.id_str}, (error, res) => {
+    if(error) {
+      console.error(error[0].message)
+    } else {
+      console.log(`${res.id_str} Liked!!!`)
+    }
+  })
+  client.post('statuses/retweet/', {id: event.id_str}, (error, res) => {
+    if(error) {
+      console.error(error[0].message, '\n')
+    } else {
+      console.log(`${res.id_str} Retweeted!!! \n`)
+    }
+  })
+})
+
+stream.on('error', error => console.error(error))
 
 const retweet = () => {
   const params = {
-    q: '#webdevelopment',
+    q: '#ReactJS',
+    count: 10,
     result_type: 'recent',
-    lang: 'en',
-    count: '10'
+    lang: 'en'
   }
 
-  Twitter.get('search/tweets', params, (err, data, res) => {
-    if (err) {
-      console.log(err.message);
-    } else {
-
-      let ids = []
-      data.statuses.forEach((tweet) => {
-        ids.push(tweet.id_str);
+  client.get('search/tweets', params, (error, data, res) => {
+    if(error) console.error(error)
+    for (let i = 0; i < data.statuses.length; i++) {
+      let id = data.statuses[i].id_str
+      client.post(`statuses/retweet/`, {id: id}, (error, res) => {
+        if(error) console.error(error)
+        console.log(`${res.id_str} Retweeted!!!`)
       })
-
-      console.log(ids);
-
-      for (i = 0; i < ids.length; i++) {
-        Twitter.post('statuses/retweet/' + ids[i], (err, data, res) => {
-          if (err) {
-            console.log(err.message);
-          } else {
-            console.log('Retweeted!');
-            i = ids.length;
-          }
-        })
-      }
     }
   })
 }
 
-retweet();
-console.log('\033[2J');
-console.log('Running retweet...');
+//setInterval(retweet, 15000)
 
-setInterval(retweet, 10000);
+stream.on('error', (error) => console.error(error))

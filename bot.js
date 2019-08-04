@@ -15,7 +15,6 @@ function bot() {
     track: '#ReactJS, #javascript, #mongodb, #php, #mysql'
   })
 
-  // Bot posting too much. 15% unfollow. Retweet and like better content.
   stream.on('data', (event) => {
     client.post('favorites/create', {id: event.id_str}, (error, res) => {
       if(error) {
@@ -44,6 +43,5 @@ function bot() {
 bot();
 setInterval(() => {
   //console.log('\033[2J');
-  //console.log('You have liked/retweeted ' + count + ' tweets!');
   bot();
 }, 900000)

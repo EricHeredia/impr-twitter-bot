@@ -39,8 +39,12 @@ function bot() {
         count++;
         let word = count === 1 ? ' tweet!':' tweets!';
         console.log('\033[2J');
-        console.log('You have liked/retweeted ' + count + word);
+        console.log('You have liked and retweeted ' + count + word);
         randomTime = getRand()
+        let futureTime = new Date().getTime() + randomTime;
+        let hours = new Date(futureTime).getHours() % 12;
+        let minutes = new Date(futureTime).getMinutes();
+        console.log('Next tweet cycle runs at ' + hours + ':' + minutes);
         stream.destroy();
       }
     })

@@ -42,6 +42,5 @@ function bot() {
 
 bot();
 setInterval(() => {
-  //console.log('\033[2J');
   bot();
 }, 900000)

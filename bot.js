@@ -77,5 +77,6 @@ function bot() {
 startCycle();
 bot();
 function myTimer(randomTime) {
+  startCycle();
   setTimeout(bot, randomTime)
 }

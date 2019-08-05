@@ -1,9 +1,27 @@
 var count = 0;
+var tweetMsg = 'You have not liked or retweeted any tweets yet.';
+var timeLeft = 'Starting first tweet cycle.';
 
 function getRand(min = 600000, max = 960000) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function startCycle() {
+  console.log('\033[2J');
+  console.log(tweetMsg);
+  console.log(timeLeft);
+  console.log(' ');
+  console.log('Starting tweet cycle...');
+}
+
+function clearCycle() {
+  console.log('\033[2J');
+  console.log(tweetMsg);
+  console.log(timeLeft);
+  console.log(' ');
+  console.log(' ');
 }
 
 var randomTime = getRand();
@@ -20,7 +38,7 @@ function bot() {
   })
 
   const stream = client.stream('statuses/filter', {
-    track: '#ReactJS, #javascript, #mongodb, #php, #mysql'
+    track: '#ReactJS, #javascript, #nodejs, #mongodb'
   })
 
   stream.on('data', (event) => {
@@ -38,15 +56,15 @@ function bot() {
         //console.log(`${res.id_str} Retweeted!!! \n`)
         count++;
         let word = count === 1 ? ' tweet!':' tweets!';
-        console.log('\033[2J');
-        console.log('You have liked and retweeted ' + count + word);
+        tweetMsg = 'You have liked and retweeted ' + count + word;
         randomTime = getRand()
         let futureTime = new Date().getTime() + randomTime;
         let hours = new Date(futureTime).getHours() % 12;
         let minutes = new Date(futureTime).getMinutes();
         let fMinutes = minutes > 9 ? minutes:'0' + minutes.toString();
         let amPm = new Date(futureTime).getHours() < 13 ? 'AM':'PM';
-        console.log('Next tweet cycle runs at ' + hours + ':' + fMinutes + ' ' + amPm);
+        timeLeft = 'Next tweet cycle runs at ' + hours + ':' + fMinutes + ' ' + amPm;
+        clearCycle();
         myTimer(randomTime);
         stream.destroy();
       }
@@ -56,6 +74,7 @@ function bot() {
   stream.on('error', error => console.error(error))
 }
 
+startCycle();
 bot();
 function myTimer(randomTime) {
   setTimeout(bot, randomTime)
